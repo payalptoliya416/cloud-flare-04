@@ -1,25 +1,42 @@
 document.addEventListener("DOMContentLoaded", () => {
   const video = document.getElementById("vid");
-  
+
   if (!video) {
-      alert("Video element not found!");
-      return;
+    alert("Video element not found!");
+    return;
   }
 
-  const mediaDevices = navigator.mediaDevices;
+  // iOS requires user interaction before getUserMedia is allowed
+  const initCamera = () => {
+    const mediaDevices = navigator.mediaDevices;
 
-  mediaDevices.getUserMedia({
-      video: { facingMode: { ideal: "environment" } }, // Use back camera
-      audio: true,
-  })
-  .then((stream) => {
+    if (!mediaDevices || !mediaDevices.getUserMedia) {
+      alert("getUserMedia not supported on this browser.");
+      return;
+    }
+
+    mediaDevices.getUserMedia({
+      video: {
+        facingMode: { exact: "environment" } // iOS sometimes prefers `exact`
+      },
+      audio: false
+    })
+    .then((stream) => {
       video.srcObject = stream;
+
+      // iOS requires muted and playsinline attributes in HTML
       video.onloadedmetadata = () => {
-          video.play();
+        video.play().catch((err) => {
+          console.error("Autoplay error:", err);
+        });
       };
-  })
-  .catch((err) => {
+    })
+    .catch((err) => {
       console.error("Error accessing media devices.", err);
-      alert("Error accessing camera/microphone: " + err.message);
-  });
+      alert("Camera access error: " + err.message);
+    });
+  };
+
+  // Wait for user interaction to initiate camera on iOS
+  video.addEventListener("click", initCamera, { once: true });
 });
