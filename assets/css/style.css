@@ -207,7 +207,10 @@ p {
   background-repeat: no-repeat;
   margin: 50px auto;
 }
-
+.scanner-qr .scanner-scan{
+   width: 380px;
+   height: 380px;
+}
 .scanner-qr-btn {
   border: 2px solid white;
   width: 100px;
