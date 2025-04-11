@@ -206,6 +206,9 @@ p {
   background-position: center;
   background-repeat: no-repeat;
   margin: 50px auto;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 .scanner-qr .scanner-scan{
    width: 350px;
